@@ -5,7 +5,6 @@ const multer = require('multer'); //обробка файлів у HTML форм
 const { Command } = require('commander');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-const { DefaultDeserializer } = require('v8');
 
 const program = new Command();
 program
@@ -15,7 +14,7 @@ program
 program.parse(process.argv);
 const options = program.opts();
 
-const photoFolder = path.resolve(options.cache);
+const photoFolder = path.resolve(options.cache); //складає шлях починаючи з поточної директорії
 if (!fs.existsSync(photoFolder)) fs.mkdirSync(photoFolder, { recursive: true });
 
 // express
@@ -23,7 +22,7 @@ const app = express();
 app.use(express.json()); // автоматично парсить JSON з тіла запиту
 app.use(express.urlencoded({ extended: true })); // парсить дані форм (x-www-form-urlencoded)
 
-// ---------------- MULTER ----------------
+// multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, photoFolder), //callback, який каже де зберігати
   filename: (req, file, cb) =>
@@ -74,8 +73,6 @@ app.get('/RegisterForm.html', (req, res) =>
 app.get('/SearchForm.html', (req, res) =>
   res.sendFile(path.join(__dirname, 'SearchForm.html'))
 );
-
-// ---------------- REGISTER ----------------
 
 /**
  * @swagger
@@ -151,7 +148,7 @@ app.get('/inventory', (req, res) => {
  *         description: Не знайдено
  */
 app.get('/inventory/:id', (req, res) => { // :id - динамічна частина url
-  const item = inventory[req.params.id];
+  const item = inventory[req.params.id]; //req.params.id отримує ID з URL
   if (!item) return res.status(404).json({ error: 'Not found' });
   res.json(item);
 });
@@ -186,7 +183,7 @@ app.get('/inventory/:id', (req, res) => { // :id - динамічна части
  *         description: Не знайдено
  */
 app.put('/inventory/:id', (req, res) => {
-  const item = inventory[req.params.id]; //req.params.id отримує ID з URL
+  const item = inventory[req.params.id]; 
   if (!item) return res.status(404).json({ error: 'Not found' });
 
   if (req.body.inventory_name) item.inventory_name = req.body.inventory_name;
