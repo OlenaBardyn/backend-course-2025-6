@@ -292,8 +292,6 @@ app.delete('/inventory/:id', (req, res) => {
   res.json({ message: 'Deleted' });
 });
 
-// ---------------- SEARCH ----------------
-
 /**
  * @swagger
  * /search:
